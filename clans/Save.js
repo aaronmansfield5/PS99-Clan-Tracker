@@ -74,7 +74,7 @@ class Save {
     
         await saveProcess();
     
-        setInterval(saveProcess, 15 * 60 * 1000);
+        setInterval(saveProcess, 5 * 60 * 1000);
     }
 
     /**
@@ -95,7 +95,7 @@ class Save {
                 if (result.rows.length > 0) {
                     const oldPoints = result.rows[0].points;
                     if (oldPoints !== Points && Points > oldPoints) {
-                        const PPH = (Points - oldPoints) * 4;
+                        const PPH = (Points - oldPoints) * 12;
                         await this.client.query(
                             'UPDATE clan_battle_points SET Points = $1, OldPoints = $2, PPH = $3 WHERE UserID = $4',
                             [Points, oldPoints, PPH, UserID]
