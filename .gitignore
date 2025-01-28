@@ -9,3 +9,7 @@ package-lock.*
 
 # SQL FILES
 *.sql
+
+# LOCAL FILES
+.vscode/*
+.vscode
