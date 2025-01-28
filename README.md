@@ -47,7 +47,7 @@ HTTP_PORT=<YOUR_HTTP_PORT>
 ```
 
 4. Set up clans in the `Clans.js` file:
-```json
+```js
 this.Clans = [
     "CLAN1",
     "CLAN2"
