@@ -60,9 +60,9 @@ class Save {
                     const ClanData = await Clan.Fetch();
                     const OrderedList = await Battle.OrderedList(ClanData);
 
-                    await this.saveDataToDatabase(OrderedList, clanId);
+                    await this.saveDataToDatabase(OrderedList, clanId, ClanData);
                     const timestamp = new Date().toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
-                    console.log(`Data for Clan ID ${clanId} saved to database successfully. - ${timestamp}`); 
+                    console.log(`Data for Clan ID ${clanId} saved to database successfully - ${timestamp}`); 
                 }
             } catch (error) {
                 console.error('Error during saving process:', error);
@@ -74,10 +74,13 @@ class Save {
         setInterval(saveProcess, 10 * 60 * 1000);
     }
 
-    async saveDataToDatabase(OrderedList, ClanId) {
+    async saveDataToDatabase(OrderedList, ClanId, ClanData) {
         try {
             for (const user of OrderedList) {
                 const { UserID, Points } = user;
+                
+                if (!ClanData.Members.find(member => member.UserID === UserID)) return false;
+
                 const result = await this.client.query(
                     'SELECT Points, last_changed, inactive_for FROM clan_battle_points WHERE UserID = $1',
                     [UserID]
