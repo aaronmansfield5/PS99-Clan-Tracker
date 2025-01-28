@@ -1,0 +1,8 @@
+# SECRET FILES
+.env
+
+# MODULE FILES
+node_modules
+
+# PACKAGE FILES
+package-lock.*
