@@ -10,14 +10,11 @@ const axios = require('axios')
 class Clan {
     constructor(id) {
         this.Clans = [
-            "K0ii",
-            "K0i2",
-            "K0i3",
-            "K0i4",
-            "K0i5"
+            "CLAN1",
+            "CLAN2"
         ];
 
-        if (id >= 6 || id < 1) throw new Error("That clan ID is out of bounds!");
+        if (id >= this.Clans.length + 1 || id < 1) throw new Error("That clan ID is out of bounds!");
 
         this.Clan = this.Clans[id - 1];
     }
