@@ -9,7 +9,7 @@ const axios = require('axios')
  */
 class Clan {
     constructor(id) {
-        this.Clans = [
+        this._Clans = [
             "K0ii",
             "K0i2",
             "K0i3",
@@ -17,9 +17,18 @@ class Clan {
             "K0i5"
         ];
 
-        if (id >= this.Clans.length + 1 || id < 1) throw new Error("That clan ID is out of bounds!");
+        if (id >= this._Clans.length + 1 || id < 1) throw new Error("That clan ID is out of bounds!");
 
-        this.Clan = this.Clans[id - 1];
+        this._Clan = this._Clans[id - 1];
+    }
+
+    /**
+     * Returns all currently tracked clans.
+     *
+     * @returns {Array}
+    */
+    get Clans() {
+        return this._Clans;
     }
 
     /**
@@ -28,9 +37,9 @@ class Clan {
     * @returns {Promise<{ body: JSON }>}
     */
     Fetch = async function() {
-        if (!this.Clan) throw new Error("There is no current clan set!");
+        if (!this._Clan) throw new Error("There is no current clan set!");
 
-        const URL = `${process.env.BIG_GAMES}/clan/${this.Clan}`;
+        const URL = `${process.env.BIG_GAMES}/clan/${this._Clan}`;
         const data = (await axios.get(URL)).data;
 
         if(!data) throw new Error("Error attempting to access BIG Games API!");
