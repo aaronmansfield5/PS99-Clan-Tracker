@@ -61,7 +61,8 @@ class Save {
                     const OrderedList = await Battle.OrderedList(ClanData);
 
                     await this.saveDataToDatabase(OrderedList, clanId);
-                    console.log(`Data for Clan ID ${clanId} saved to database successfully.`);
+                    const timestamp = new Date().toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+                    console.log(`Data for Clan ID ${clanId} saved to database successfully. - ${timestamp}`); 
                 }
             } catch (error) {
                 console.error('Error during saving process:', error);
