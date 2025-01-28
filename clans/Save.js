@@ -57,7 +57,8 @@ class Save {
     async startSaving() {
         const saveProcess = async () => {
             try {
-                for (let clanId = 1; clanId <= 5; clanId++) {
+                let tempClan = new Clans(1)
+                for (let clanId = 1; clanId <= tempClan.Clans.length; clanId++) {
                     console.log(`Processing Clan ID: ${clanId}`);
                     const Battle = new Battles();
                     const Clan = new Clans(clanId);
