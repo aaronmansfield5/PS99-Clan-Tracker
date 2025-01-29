@@ -53,7 +53,8 @@ class Save {
     async startSaving() {
         const saveProcess = async () => {
             try {
-                for (let clanId = 1; clanId <= 5; clanId++) {
+                const tempClan = new Clans(1);
+                for (let clanId = 1; clanId <= tempClan.Clans.length; clanId++) {
                     console.log(`Processing Clan ID: ${clanId}`);
                     const Battle = new Battles();
                     const Clan = new Clans(clanId);
@@ -73,7 +74,6 @@ class Save {
             const now = new Date();
             const minutes = now.getMinutes();
             const nextRunMinute = Math.ceil(minutes / 10) * 10;
-    
             if (nextRunMinute === 60) {
                 now.setHours(now.getHours() + 1);
                 now.setMinutes(0);
@@ -82,14 +82,14 @@ class Save {
             }
             now.setSeconds(0);
             now.setMilliseconds(0);
-    
             return now.getTime() - Date.now();
         };
     
         setTimeout(() => {
+            saveProcess();
             setInterval(saveProcess, 10 * 60 * 1000);
         }, getNextRunDelay());
-    }
+    }    
 
     async saveDataToDatabase(OrderedList, ClanId, ClanData) {
         try {
@@ -107,14 +107,14 @@ class Save {
                     const { points: oldPoints, last_changed, inactive_for } = result.rows[0];
 
                     if (oldPoints !== Points && Points > oldPoints) {
-                        const PPH = (Points - oldPoints) * 4;
+                        const PPH = (Points - oldPoints) * 6;
                         await this.client.query(
                             'UPDATE clan_battle_points SET Points = $1, OldPoints = $2, PPH = $3, last_changed = 0, inactive_for = inactive_for + last_changed WHERE UserID = $4',
                             [Points, oldPoints, PPH, UserID]
                         );
                     } else {
                         await this.client.query(
-                            'UPDATE clan_battle_points SET last_changed = last_changed + 600 WHERE UserID = $1',
+                            'UPDATE clan_battle_points SET last_changed = last_changed + 300 WHERE UserID = $1',
                             [UserID]
                         );
                     }
