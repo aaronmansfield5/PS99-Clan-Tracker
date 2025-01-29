@@ -1,5 +1,7 @@
 require('dotenv').config();
-const { Client } = require('pg');
+const {
+    Client
+} = require('pg');
 const Battles = require('./Battles.js');
 const Clans = require('./Clans.js');
 
@@ -60,16 +62,22 @@ class Save {
                     const Clan = new Clans(clanId);
                     const ClanData = await Clan.Fetch();
                     const OrderedList = await Battle.OrderedList(ClanData);
-    
+
                     await this.saveDataToDatabase(OrderedList, clanId, ClanData);
-                    const timestamp = new Date().toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const timestamp = new Date().toLocaleString('en-GB', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
                     console.log(`Data for Clan ID ${clanId} saved to database successfully - ${timestamp}`);
                 }
             } catch (error) {
                 console.error('Error during saving process:', error);
             }
         };
-    
+
         const getNextRunDelay = () => {
             const now = new Date();
             const minutes = now.getMinutes();
@@ -84,18 +92,21 @@ class Save {
             now.setMilliseconds(0);
             return now.getTime() - Date.now();
         };
-    
+
         setTimeout(() => {
             saveProcess();
             setInterval(saveProcess, 10 * 60 * 1000);
         }, getNextRunDelay());
-    }    
+    }
 
     async saveDataToDatabase(OrderedList, ClanId, ClanData) {
         try {
             for (const user of OrderedList) {
-                const { UserID, Points } = user;
-                
+                const {
+                    UserID,
+                    Points
+                } = user;
+
                 if (!ClanData.Members.find(member => member.UserID === UserID)) return false;
 
                 const result = await this.client.query(
@@ -104,7 +115,11 @@ class Save {
                 );
 
                 if (result.rows.length > 0) {
-                    const { points: oldPoints, last_changed, inactive_for } = result.rows[0];
+                    const {
+                        points: oldPoints,
+                        last_changed,
+                        inactive_for
+                    } = result.rows[0];
 
                     if (oldPoints !== Points && Points > oldPoints) {
                         const PPH = (Points - oldPoints) * 6;
@@ -114,8 +129,12 @@ class Save {
                         );
                     } else {
                         await this.client.query(
-                            'UPDATE clan_battle_points SET last_changed = last_changed + 300 WHERE UserID = $1',
-                            [UserID]
+                            `UPDATE clan_battle_points 
+                             SET last_changed = last_changed + 600, 
+                                 oldpoints = $1, 
+                                 pph = 0 
+                             WHERE UserID = $2`,
+                            [Points, UserID]
                         );
                     }
                 } else {
@@ -134,7 +153,7 @@ class Save {
         } catch (error) {
             console.error('Error saving data to database:', error);
         }
-    }    
+    }
 }
 
 module.exports = Save;

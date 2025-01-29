@@ -118,7 +118,7 @@ app.get('/clanbattle/pph/:clanId', async(req, res, next) => {
         const sum = result.rows.reduce((acc, obj) => acc + parseInt(obj.pph, 10), 0);
         const average = (sum / result.rows.length).toFixed(2);
 
-        res.json({ status: 'ok', data: { "Name": clanData.Name, pph: average } });
+        res.json({ status: 'ok', data: { "Name": clanData.Name, pph: { total: sum, average } } });
     } catch (error) {
         next(error);
     }

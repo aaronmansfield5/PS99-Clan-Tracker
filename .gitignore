@@ -13,3 +13,6 @@ package-lock.*
 # LOCAL FILES
 .vscode/*
 .vscode
+
+# BATCH FILE
+*.bat
