@@ -59,19 +59,36 @@ class Save {
                     const Clan = new Clans(clanId);
                     const ClanData = await Clan.Fetch();
                     const OrderedList = await Battle.OrderedList(ClanData);
-
+    
                     await this.saveDataToDatabase(OrderedList, clanId, ClanData);
                     const timestamp = new Date().toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
-                    console.log(`Data for Clan ID ${clanId} saved to database successfully - ${timestamp}`); 
+                    console.log(`Data for Clan ID ${clanId} saved to database successfully - ${timestamp}`);
                 }
             } catch (error) {
                 console.error('Error during saving process:', error);
             }
         };
-
-        await saveProcess();
-
-        setInterval(saveProcess, 10 * 60 * 1000);
+    
+        const getNextRunDelay = () => {
+            const now = new Date();
+            const minutes = now.getMinutes();
+            const nextRunMinute = Math.ceil(minutes / 10) * 10;
+    
+            if (nextRunMinute === 60) {
+                now.setHours(now.getHours() + 1);
+                now.setMinutes(0);
+            } else {
+                now.setMinutes(nextRunMinute);
+            }
+            now.setSeconds(0);
+            now.setMilliseconds(0);
+    
+            return now.getTime() - Date.now();
+        };
+    
+        setTimeout(() => {
+            setInterval(saveProcess, 10 * 60 * 1000);
+        }, getNextRunDelay());
     }
 
     async saveDataToDatabase(OrderedList, ClanId, ClanData) {
